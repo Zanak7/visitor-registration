@@ -21,7 +21,8 @@ public class CheckInFunction
     }
 
     [Function("checkin")]
-    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = "checkin")] HttpRequestData req)
+    public async Task<HttpResponseData> Run(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "checkin")] HttpRequestData req)
     {
         var body = await new StreamReader(req.Body).ReadToEndAsync();
 
