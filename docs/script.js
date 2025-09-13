@@ -1,5 +1,5 @@
- // TODO: replace with your real Function App URL, e.g.:
-    const API_BASE = "https://visitorapp-e8bef2g9dgdgfpcg.swedencentral-01.azurewebsites.net";
+ // API-adress (ändra till min egen)
+    const API_BASE = "https://visitorapp.azurewebsites.net";
     //dpifhqduoh
     const form = document.getElementById('checkin-form');
     const msg = document.getElementById('msg');
