@@ -4,7 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 
 var host = new HostBuilder()
+
+    // Startar upp mina Azure Functions
     .ConfigureFunctionsWorkerDefaults()
+
+    // Tar in inställningar (lokalt används local.settings.json)
     .ConfigureAppConfiguration((context, config) =>
     {
         config.AddEnvironmentVariables();
@@ -13,6 +17,8 @@ var host = new HostBuilder()
             config.AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);
         }
     })
+
+     // Lägger till loggar och inställningar
     .ConfigureServices(services =>
     {
         services.AddOptions();

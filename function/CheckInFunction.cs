@@ -19,16 +19,18 @@ public class CheckInFunction
         _logger = loggerFactory.CreateLogger<CheckInFunction>();
         _config = config;
     }
-
+    // Funktion som körs när någon skickar ett POST-anrop till /api/checkin
     [Function("checkin")]
     public async Task<HttpResponseData> Run(
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = "checkin")] HttpRequestData req)
     {
         var body = await new StreamReader(req.Body).ReadToEndAsync();
 
+        
         CheckInRequest data;
         try
         {
+            // Försöker läsa in JSON från anropet
             data = JsonSerializer.Deserialize<CheckInRequest>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
         catch (Exception ex)
@@ -38,14 +40,14 @@ public class CheckInFunction
             await bad.WriteStringAsync("Invalid JSON.");
             return bad;
         }
-
+        // Kollar så att det faktiskt finns ett namn
         if (data == null || string.IsNullOrWhiteSpace(data.Name))
         {
             var bad = req.CreateResponse(HttpStatusCode.BadRequest);
             await bad.WriteStringAsync("Name is required.");
             return bad;
         }
-
+        // Hämtar anslutningssträngen till databasen från inställningarna
         var connStr = _config["SqlConnectionString"];
         if (string.IsNullOrWhiteSpace(connStr))
         {
@@ -60,6 +62,7 @@ public class CheckInFunction
             await using var conn = new SqlConnection(connStr);
             await conn.OpenAsync();
 
+            // Skriver in besökaren i databasen
             var cmd = new SqlCommand(@"INSERT INTO dbo.VisitorLog (Name, Email, TimestampUtc) VALUES (@name, @email, SYSUTCDATETIME());", conn);
             cmd.Parameters.AddWithValue("@name", data.Name);
             cmd.Parameters.AddWithValue("@email", (object?)data.Email ?? DBNull.Value);
@@ -67,13 +70,15 @@ public class CheckInFunction
 
             _logger.LogInformation("Visitor '{Name}' checked in.", data.Name);
 
+            // Svarar med 201 Created om allt gick bra
             var ok = req.CreateResponse(HttpStatusCode.Created);
             ok.Headers.Add("Content-Type", "application/json");
             await ok.WriteStringAsync(JsonSerializer.Serialize(new { ok = true }));
             return ok;
         }
         catch (Exception ex)
-        {
+        {   
+            // Om något går fel när vi skriver till databasen
             _logger.LogError(ex, "DB insert failed.");
             var srv = req.CreateResponse(HttpStatusCode.InternalServerError);
             await srv.WriteStringAsync("Failed to save.");
@@ -81,5 +86,6 @@ public class CheckInFunction
         }
     }
 
+    // Enkel modell för att ta emot namn och (valfri) e-postadress
     private record CheckInRequest(string Name, string? Email);
 }

@@ -6,3 +6,6 @@
     "SqlConnectionString": "Server=visitor-sql-server.database.windows.net;Database=VisitorDB;User Id=zanakadir;Password=Liyanakadir23;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   }
 }
+
+
+// nyckelvärde par ovan 
