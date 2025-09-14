@@ -84,7 +84,7 @@ public class CheckInFunction
             cmd.Parameters.AddWithValue("@email", (object?)email ?? DBNull.Value);
             await cmd.ExecuteNonQueryAsync();
 
-            _logger.LogInformation("Visitor '{Name}' checked in.", name);
+            _logger.LogInformation("Visitor's '{Name}' checked in.", name);
             _logger.LogInformation("Input received email is : '{Email}'.", email);
 
             // Svarar med 201 Created om allt gick bra
