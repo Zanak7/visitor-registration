@@ -26,7 +26,6 @@ public class CheckInFunction
     {
         var body = await new StreamReader(req.Body).ReadToEndAsync();
 
-        
         CheckInRequest data;
         try
         {
@@ -48,20 +47,16 @@ public class CheckInFunction
             return bad;
         }
 
-        _logger.LogInformation("Input received name is '{Name}'.", data.Name);
+        // --- NEW: normalize + immediate input logs (with "empty") ---
+        var name = (data.Name ?? string.Empty).Trim();
+        var email = string.IsNullOrWhiteSpace(data.Email) ? null : data.Email!.Trim();
 
-        if (string.IsNullOrWhiteSpace(data.Email))
-        {
-            _logger.LogInformation("Email is missing.");
-        }
-        else
-        {
-            _logger.LogInformation("Input received email is : '{Email}'.", data.Email);
-        }
-
+        _logger.LogInformation("Input received name is '{Name}'.", string.IsNullOrEmpty(name) ? "empty" : name);
+        _logger.LogInformation("Input received email is '{Email}'.", string.IsNullOrEmpty(email) ? "empty" : email);
+        // ------------------------------------------------------------
 
         // Kollar så att det faktiskt finns ett namn
-        if (string.IsNullOrWhiteSpace(data.Name))
+        if (string.IsNullOrWhiteSpace(name))
         {
             var bad = req.CreateResponse(HttpStatusCode.BadRequest);
             _logger.LogWarning("Name is missing."); // 
@@ -85,12 +80,12 @@ public class CheckInFunction
 
             // Skriver in besökaren i databasen
             var cmd = new SqlCommand(@"INSERT INTO dbo.VisitorLog (Name, Email, TimestampUtc) VALUES (@name, @email, SYSUTCDATETIME());", conn);
-            cmd.Parameters.AddWithValue("@name", data.Name);
-            cmd.Parameters.AddWithValue("@email", (object?)data.Email ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@email", (object?)email ?? DBNull.Value);
             await cmd.ExecuteNonQueryAsync();
 
-            _logger.LogInformation("Visitor '{Name}' checked in.", data.Name);
-            _logger.LogInformation("Input received email is : '{Email}'.", data.Email);
+            _logger.LogInformation("Visitor '{Name}' checked in.", name);
+            _logger.LogInformation("Input received email is : '{Email}'.", email);
 
             // Svarar med 201 Created om allt gick bra
             var ok = req.CreateResponse(HttpStatusCode.Created);
