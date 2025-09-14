@@ -27,6 +27,6 @@ CREATE TABLE dbo.VisitorLog (
 - Create an Azure **Function App** (dotnet isolated), enable Application Insights.
 - In Function App **Configuration**, add `SqlConnectionString` app setting.
 - Deploy `function/` folder (VS Code Azure Functions extension is easiest).
-- Create an Azure **Static Web App** and deploy the `frontend/` folder (via GitHub).
+- Create a **GitHub Page** and deploy the `docs/` folder (via GitHub).
 - In `frontend/index.html`, set `API_BASE` to your Function App URL.
 - In Function App **CORS**, add your Static Web App URL.
