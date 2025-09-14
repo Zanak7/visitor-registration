@@ -90,6 +90,7 @@ public class CheckInFunction
             await cmd.ExecuteNonQueryAsync();
 
             _logger.LogInformation("Visitor '{Name}' checked in.", data.Name);
+            _logger.LogInformation("Input received email is : '{Email}'.", data.Email);
 
             // Svarar med 201 Created om allt gick bra
             var ok = req.CreateResponse(HttpStatusCode.Created);
