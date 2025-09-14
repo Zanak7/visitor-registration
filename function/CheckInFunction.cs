@@ -56,7 +56,7 @@ public class CheckInFunction
         }
         else
         {
-            _logger.LogInformation("Input received email is '{Email}'.", data.Email);
+            _logger.LogInformation("Input received email is : '{Email}'.", data.Email);
         }
 
 
