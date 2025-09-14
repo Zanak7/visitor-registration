@@ -40,8 +40,28 @@ public class CheckInFunction
             await bad.WriteStringAsync("Invalid JSON.");
             return bad;
         }
+
+        if (data == null)
+        {
+            var bad = req.CreateResponse(HttpStatusCode.BadRequest);
+            await bad.WriteStringAsync("Invalid JSON.");
+            return bad;
+        }
+
+        _logger.LogInformation("Input received name is '{Name}'.", data.Name);
+
+        if (string.IsNullOrWhiteSpace(data.Email))
+        {
+            _logger.LogInformation("Email is missing.");
+        }
+        else
+        {
+            _logger.LogInformation("Input received email is '{Email}'.", data.Email);
+        }
+
+
         // Kollar så att det faktiskt finns ett namn
-        if (data == null || string.IsNullOrWhiteSpace(data.Name))
+        if (string.IsNullOrWhiteSpace(data.Name))
         {
             var bad = req.CreateResponse(HttpStatusCode.BadRequest);
             _logger.LogWarning("Name is missing."); // 
