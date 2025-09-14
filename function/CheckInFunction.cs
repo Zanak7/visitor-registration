@@ -44,6 +44,7 @@ public class CheckInFunction
         if (data == null || string.IsNullOrWhiteSpace(data.Name))
         {
             var bad = req.CreateResponse(HttpStatusCode.BadRequest);
+            _logger.LogWarning("Name is missing."); // 
             await bad.WriteStringAsync("Name is required.");
             return bad;
         }
