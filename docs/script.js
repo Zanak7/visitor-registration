@@ -1,11 +1,11 @@
  // API-adress (ändra till min egen)
-    const API_BASE = "https://visitorapp.azurewebsites.net";
+    const API_BASE = "https://visitorapp-e8bef2g9dgdgfpcg.swedencentral-01.azurewebsites.net/api/checkin?code=radjW0VerNjBxVU7M3ZDDwBsUFlZ-jjSy1xS73GfFRxnAzFuzLW9wA==";
     
     // Hämta formulär + meddelande
     const form = document.getElementById('checkin-form');
     const msg = document.getElementById('msg');
 
-    // När man skickar formuläret
+    // När man skickar formuläret via funktion
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       msg.textContent = "";
@@ -26,7 +26,7 @@
 
       try {
         // Skicka till API
-        const res = await fetch(API_BASE + "/api/checkin", {
+        const res = await fetch(API_BASE, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
